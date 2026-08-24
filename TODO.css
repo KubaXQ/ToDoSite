@@ -1,15 +1,17 @@
-/* =========================
+/* =========================================================
    RESET
-   ========================= */
+   ========================================================= */
 
+/* box-sizing: border-box sprawia, że padding i border
+   są wliczane do szerokości oraz wysokości elementu. */
 * {
     box-sizing: border-box;
 }
 
 
-/* =========================
+/* =========================================================
    BODY
-   ========================= */
+   ========================================================= */
 
 body {
     margin: 0;
@@ -24,10 +26,12 @@ body {
 }
 
 
-/* =========================
+/* =========================================================
    GŁÓWNA APLIKACJA
-   ========================= */
+   ========================================================= */
 
+/* Główny kontener aplikacji.
+   max-width ogranicza jego szerokość na dużych ekranach. */
 .todo-app {
     width: 100%;
     max-width: 850px;
@@ -36,9 +40,9 @@ body {
 }
 
 
-/* =========================
+/* =========================================================
    NAGŁÓWEK
-   ========================= */
+   ========================================================= */
 
 h1 {
     margin: 0 0 30px 0;
@@ -52,48 +56,67 @@ h1 {
 }
 
 
-/* =========================
-   DODAWANIE ZADANIA
-   ========================= */
+/* =========================================================
+   GŁÓWNY KONTENER ZADAŃ
+   ========================================================= */
 
+/* Zawiera listę zadań oraz panel szczegółów.
+   Gdy panel szczegółów jest otwarty, oba elementy
+   mogą znajdować się obok siebie. */
 #taskContent {
     display: flex;
+
     gap: 20px;
+
     width: 100%;
 }
 
 
-/* LISTA */
+/* =========================================================
+   LISTA ZADAŃ
+   ========================================================= */
 
 #taskListContainer {
-    width: 100%;
-}
-
-
-/* PANEL SZCZEGÓŁÓW */
-
-#taskContent {
     display: flex;
-    gap: 20px;
-    width: 100%;
-}
 
-#taskListContainer {
+    flex-direction: column;
+
+    gap: 10px;
+
+    width: 100%;
+
+    margin-top: 5px;
+
     flex: 1;
 }
 
-#taskDetails {
-    display: none;
-    position: relative;
 
-}
-
+/* Gdy panel szczegółów jest otwarty,
+   lista nadal zajmuje swoją część dostępnego miejsca. */
 #taskContent.details-open #taskListContainer {
     flex: 1;
 }
 
+
+/* =========================================================
+   PANEL SZCZEGÓŁÓW
+   ========================================================= */
+
+/* Domyślnie panel szczegółów jest ukryty.
+   position: relative jest potrzebne,
+   aby przycisk X z position: absolute
+   pozycjonował się względem panelu. */
+#taskDetails {
+    display: none;
+
+    position: relative;
+}
+
+
+/* Wygląd panelu po jego otwarciu. */
 #taskContent.details-open #taskDetails {
     display: block;
+
     flex: 1;
 
     min-height: 300px;
@@ -107,9 +130,9 @@ h1 {
 }
 
 
-/* =========================
-   INPUT
-   ========================= */
+/* =========================================================
+   INPUT DO DODAWANIA ZADANIA
+   ========================================================= */
 
 #taskInput {
     width: 420px;
@@ -133,11 +156,13 @@ h1 {
 }
 
 
+/* Kolor tekstu placeholdera. */
 #taskInput::placeholder {
     color: #777b85;
 }
 
 
+/* Wygląd inputa po kliknięciu. */
 #taskInput:focus {
     border-color: #6366f1;
 
@@ -146,382 +171,9 @@ h1 {
 }
 
 
-/* =========================
-   PRZYCISK DODAWANIA
-   ========================= */
-
-#addTaskButton {
-    width: 150px;
-    height: 50px;
-
-    flex-shrink: 0;
-
-    border: none;
-    border-radius: 11px;
-
-    background: #6366f1;
-    color: white;
-
-    font-size: 15px;
-    font-weight: 600;
-
-    cursor: pointer;
-
-    transition:
-        background 0.2s,
-        transform 0.2s;
-}
-
-
-#addTaskButton:hover {
-    background: #7477f5;
-
-    transform: translateY(-1px);
-}
-
-
-#addTaskButton:active {
-    transform: translateY(0);
-}
-
-
-/* =========================
-   STATYSTYKI
-   ========================= */
-
-#taskStatistics {
-    display: grid;
-
-    margin-top: 2%;
-    grid-template-columns: repeat(3, 1fr);
-
-    gap: 14px;
-
-    margin-bottom: 22px;
-}
-
-
-/* =========================
-   KARTA STATYSTYKI
-   ========================= */
-
-.task-section {
-    min-height: 95px;
-
-    padding: 18px 20px;
-
-    border: 1px solid #292c34;
-    border-radius: 14px;
-
-    background: #181a1f;
-
-    transition:
-        border-color 0.2s,
-        transform 0.2s;
-}
-
-
-.task-section:hover {
-    border-color: #393d47;
-
-    transform: translateY(-1px);
-}
-
-
-/* Nazwa statystyki */
-
-.task-section-title {
-    color: #9da2ae;
-
-    font-size: 14px;
-}
-
-.task.selected {
-    border-color: #6366f1;
-}
-
-
-
-
-/* Liczba */
-
-.number {
-    margin-top: 7px;
-
-    color: #ffffff;
-
-    font-size: 30px;
-    font-weight: 700;
-}
-
-
-/* =========================
-   KATEGORIE
-   ========================= */
-
-#categories {
-    display: flex;
-
-    align-items: center;
-
-    gap: 8px;
-
-    margin-bottom: 16px;
-}
-
-
-/* =========================
-   PRZYCISKI KATEGORII
-   ========================= */
-
-.categoryButton {
-    padding: 8px 16px;
-
-    border: 1px solid #30333c;
-    border-radius: 20px;
-
-    background: #181a1f;
-    color: #b8bdc8;
-
-    font-size: 14px;
-
-    cursor: pointer;
-
-    transition:
-        background 0.2s,
-        border-color 0.2s,
-        color 0.2s,
-        transform 0.2s;
-}
-
-
-.categoryButton:hover {
-    background: #22242b;
-
-    border-color: #4a4e5a;
-
-    color: #ffffff;
-
-    transform: translateY(-1px);
-}
-
-
-/* Aktywna kategoria */
-
-.categoryButton.active {
-    background: #6366f1;
-
-    border-color: #6366f1;
-
-    color: #ffffff;
-}
-
-
-/* =========================
-   LISTA ZADAŃ
-   ========================= */
-
-#taskListContainer {
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 10px;
-
-    margin-top: 5px;
-}
-
-
-/* =========================
-   POJEDYNCZE ZADANIE
-   ========================= */
-
-.task {
-    display: flex;
-
-    align-items: center;
-
-    gap: 14px;
-
-    min-height: 60px;
-
-    padding: 12px 15px;
-
-    border: 1px solid #292c34;
-    border-radius: 12px;
-
-    background: #181a1f;
-
-    transition:
-        border-color 0.2s,
-        background 0.2s,
-        transform 0.2s;
-}
-
-
-.task:hover {
-    border-color: #3a3d47;
-
-    background: #1b1d23;
-
-    transform: translateY(-1px);
-}
-
-
-/* =========================
-   CHECKBOX
-   ========================= */
-
-.taskCheckbox {
-    width: 19px;
-    height: 19px;
-
-    flex-shrink: 0;
-
-    cursor: pointer;
-
-    accent-color: #6366f1;
-}
-
-
-/* =========================
-   TEKST ZADANIA
-   ========================= */
-
-.task span {
-    flex: 1;
-
-    color: #eeeeee;
-
-    font-size: 16px;
-
-    word-break: break-word;
-}
-
-
-/* =========================
-   PRZYCISK USUWANIA
-   ========================= */
-
-.deleteTaskButton {
-    flex-shrink: 0;
-
-    padding: 8px 13px;
-
-    border: 1px solid #383b44;
-    border-radius: 8px;
-
-    background: transparent;
-
-    color: #aeb1ba;
-
-    font-size: 13px;
-
-    cursor: pointer;
-
-    transition:
-        background 0.2s,
-        border-color 0.2s,
-        color 0.2s;
-}
-
-
-.deleteTaskButton:hover {
-    background: #2a1c1f;
-
-    border-color: #8b3f48;
-
-    color: #ff7b86;
-}
-
-.saveDescriptionButton {
-    padding: 8px 14px;
-
-    border: 1px solid #383b44;
-    border-radius: 8px;
-
-    background: #6366f1;
-    color: white;
-
-    font-size: 14px;
-    cursor: pointer;
-
-    transition: 0.2s;
-}
-
-.saveDescriptionButton:hover {
-    background: #7477f5;
-}
-
-.closeTaskDetails {
-    position: absolute;
-
-    top: 15px;
-    right: 15px;
-
-    width: 32px;
-    height: 32px;
-
-    border: 1px solid #383b44;
-    border-radius: 8px;
-
-    background: transparent;
-    color: #aeb1ba;
-
-    font-size: 16px;
-    font-weight: 600;
-
-    cursor: pointer;
-
-    transition: 0.2s;
-}
-
-.closeTaskDetails:hover {
-    background: #2a1c1f;
-    border-color: #8b3f48;
-    color: #ff7b86;
-}
-
-/* =========================
-   OPIS ZADANIA
-   ========================= */
-
-#taskDetails textarea {
-    width: 100%;
-    min-height: 180px;
-
-    margin-top: 10px;
-    padding: 12px 14px;
-
-    border: 1px solid #2d3038;
-    border-radius: 10px;
-
-    background: #191b20;
-    color: #eeeeee;
-
-    font-family: Arial, sans-serif;
-    font-size: 15px;
-    line-height: 1.5;
-
-    resize: vertical;
-
-    outline: none;
-
-    transition:
-        border-color 0.2s,
-        box-shadow 0.2s;
-}
-
-#taskDetails textarea::placeholder {
-    color: #777b85;
-}
-
-#taskDetails textarea:focus {
-    border-color: #6366f1;
-
-    box-shadow:
-        0 0 0 3px rgba(99, 102, 241, 0.12);
-}
+/* =========================================================
+   SELECT - WYBÓR KATEGORII
+   ========================================================= */
 
 #taskCategory {
     width: 150px;
@@ -546,59 +198,454 @@ h1 {
         box-shadow 0.2s;
 }
 
+
+/* Delikatna zmiana obramowania po najechaniu. */
 #taskCategory:hover {
     border-color: #4a4e5a;
 }
 
+
+/* Wygląd selecta po uzyskaniu focusa. */
 #taskCategory:focus {
     border-color: #6366f1;
 
     box-shadow:
         0 0 0 3px rgba(99, 102, 241, 0.12);
 }
+
+
+/* Wygląd poszczególnych opcji. */
 #taskCategory option {
     background: #191b20;
     color: #ffffff;
 }
 
 
-/* =========================
-   RESPONSYWNOŚĆ
-   ========================= */
+/* =========================================================
+   PRZYCISK DODAWANIA ZADANIA
+   ========================================================= */
+
+#addTaskButton {
+    width: 150px;
+    height: 50px;
+
+    flex-shrink: 0;
+
+    border: none;
+    border-radius: 11px;
+
+    background: #6366f1;
+    color: white;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s,
+        transform 0.2s;
+}
+
+
+/* Efekt po najechaniu. */
+#addTaskButton:hover {
+    background: #7477f5;
+
+    transform: translateY(-1px);
+}
+
+
+/* Usuwamy przesunięcie po kliknięciu. */
+#addTaskButton:active {
+    transform: translateY(0);
+}
+
+
+/* =========================================================
+   STATYSTYKI
+   ========================================================= */
+
+#taskStatistics {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 14px;
+
+    margin-top: 2%;
+    margin-bottom: 22px;
+}
+
+
+/* =========================================================
+   KARTA STATYSTYKI
+   ========================================================= */
+
+.task-section {
+    min-height: 95px;
+
+    padding: 18px 20px;
+
+    border: 1px solid #292c34;
+    border-radius: 14px;
+
+    background: #181a1f;
+
+    transition:
+        border-color 0.2s,
+        transform 0.2s;
+}
+
+
+/* Delikatny efekt po najechaniu. */
+.task-section:hover {
+    border-color: #393d47;
+
+    transform: translateY(-1px);
+}
+
+
+/* Nazwa statystyki. */
+.task-section-title {
+    color: #9da2ae;
+
+    font-size: 14px;
+}
+
+
+/* Liczba wyświetlana w statystyce. */
+.number {
+    margin-top: 7px;
+
+    color: #ffffff;
+
+    font-size: 30px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   KATEGORIE
+   ========================================================= */
+
+#categories {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 16px;
+}
+
+
+/* =========================================================
+   PRZYCISKI KATEGORII
+   ========================================================= */
+
+.categoryButton {
+    padding: 8px 16px;
+
+    border: 1px solid #30333c;
+    border-radius: 20px;
+
+    background: #181a1f;
+    color: #b8bdc8;
+
+    font-size: 14px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s,
+        border-color 0.2s,
+        color 0.2s,
+        transform 0.2s;
+}
+
+
+/* Efekt po najechaniu na kategorię. */
+.categoryButton:hover {
+    background: #22242b;
+
+    border-color: #4a4e5a;
+
+    color: #ffffff;
+
+    transform: translateY(-1px);
+}
+
+
+/* Wygląd aktualnie wybranej kategorii. */
+.categoryButton.active {
+    background: #6366f1;
+
+    border-color: #6366f1;
+
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   POJEDYNCZE ZADANIE
+   ========================================================= */
+
+.task {
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    min-height: 60px;
+
+    padding: 12px 15px;
+
+    border: 1px solid #292c34;
+    border-radius: 12px;
+
+    background: #181a1f;
+
+    transition:
+        border-color 0.2s,
+        background 0.2s,
+        transform 0.2s;
+}
+
+
+/* Efekt po najechaniu na zadanie. */
+.task:hover {
+    border-color: #3a3d47;
+
+    background: #1b1d23;
+
+    transform: translateY(-1px);
+}
+
+
+/* Wygląd aktualnie wybranego zadania. */
+.task.selected {
+    border-color: #6366f1;
+}
+
+
+/* =========================================================
+   CHECKBOX ZADANIA
+   ========================================================= */
+
+.taskCheckbox {
+    width: 19px;
+    height: 19px;
+
+    flex-shrink: 0;
+
+    cursor: pointer;
+
+    /* Kolor zaznaczonego checkboxa. */
+    accent-color: #6366f1;
+}
+
+
+/* =========================================================
+   TEKST ZADANIA
+   ========================================================= */
+
+.task span {
+    flex: 1;
+
+    color: #eeeeee;
+
+    font-size: 16px;
+
+    /* Pozwala łamać długie teksty. */
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   PRZYCISK USUWANIA
+   ========================================================= */
+
+.deleteTaskButton {
+    flex-shrink: 0;
+
+    padding: 8px 13px;
+
+    border: 1px solid #383b44;
+    border-radius: 8px;
+
+    background: transparent;
+
+    color: #aeb1ba;
+
+    font-size: 13px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s,
+        border-color 0.2s,
+        color 0.2s;
+}
+
+
+/* Czerwony efekt sugerujący usuwanie. */
+.deleteTaskButton:hover {
+    background: #2a1c1f;
+
+    border-color: #8b3f48;
+
+    color: #ff7b86;
+}
+
+
+/* =========================================================
+   PRZYCISK ZAPISYWANIA OPISU
+   ========================================================= */
+
+.saveDescriptionButton {
+    padding: 8px 14px;
+
+    border: 1px solid #383b44;
+    border-radius: 8px;
+
+    background: #6366f1;
+    color: white;
+
+    font-size: 14px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+
+/* Efekt po najechaniu na przycisk zapisu. */
+.saveDescriptionButton:hover {
+    background: #7477f5;
+}
+
+
+/* =========================================================
+   PRZYCISK ZAMYKANIA PANELU
+   ========================================================= */
+
+.closeTaskDetails {
+    position: absolute;
+
+    top: 15px;
+    right: 15px;
+
+    width: 32px;
+    height: 32px;
+
+    border: 1px solid #383b44;
+    border-radius: 8px;
+
+    background: transparent;
+    color: #aeb1ba;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+
+/* Efekt po najechaniu na X. */
+.closeTaskDetails:hover {
+    background: #2a1c1f;
+
+    border-color: #8b3f48;
+
+    color: #ff7b86;
+}
+
+
+/* =========================================================
+   TEXTAREA - OPIS ZADANIA
+   ========================================================= */
+
+#taskDetails textarea {
+    width: 100%;
+
+    min-height: 180px;
+
+    margin-top: 10px;
+
+    padding: 12px 14px;
+
+    border: 1px solid #2d3038;
+    border-radius: 10px;
+
+    background: #191b20;
+    color: #eeeeee;
+
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+
+    /* Użytkownik może zmieniać wysokość textarea,
+       ale tylko w pionie. */
+    resize: vertical;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+}
+
+
+/* Kolor placeholdera textarea. */
+#taskDetails textarea::placeholder {
+    color: #777b85;
+}
+
+
+/* Wygląd textarea po kliknięciu. */
+#taskDetails textarea:focus {
+    border-color: #6366f1;
+
+    box-shadow:
+        0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+
+/* =========================================================
+   RESPONSYWNOŚĆ - TELEFONY / MAŁE EKRANY
+   ========================================================= */
 
 @media (max-width: 700px) {
 
+    /* Mniejszy padding całej strony. */
     body {
         padding: 30px 15px;
     }
 
 
+    /* Zmniejszamy nagłówek. */
     h1 {
         font-size: 30px;
     }
 
 
-    /* Input i przycisk jeden pod drugim */
-
-    #addTaskContainer {
-        flex-direction: column;
-
-        width: 100%;
-    }
-
-
+    /* Input zajmuje całą dostępną szerokość. */
     #taskInput {
         width: 100%;
     }
 
 
+    /* Przycisk dodawania zajmuje całą szerokość. */
     #addTaskButton {
         width: 100%;
     }
 
 
-    /* Statystyki */
-
+    /* Statystyki układamy jedna pod drugą. */
     #taskStatistics {
         grid-template-columns: 1fr;
 
@@ -606,8 +653,8 @@ h1 {
     }
 
 
-    /* Kategorie */
-
+    /* Kategorie mogą przewijać się poziomo,
+       jeżeli nie mieszczą się na ekranie. */
     #categories {
         overflow-x: auto;
 
@@ -615,21 +662,20 @@ h1 {
     }
 
 
+    /* Kategorie nie łamią tekstu na kilka linii. */
     .categoryButton {
         white-space: nowrap;
     }
 
 
-    /* Zadania */
-
+    /* Zmniejszamy padding pojedynczego zadania. */
     .task {
         padding: 11px 12px;
     }
 
 
+    /* Zmniejszamy przycisk Delete na małych ekranach. */
     .deleteTaskButton {
         padding: 7px 9px;
     }
 }
-
-
