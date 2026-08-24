@@ -523,6 +523,44 @@ h1 {
         0 0 0 3px rgba(99, 102, 241, 0.12);
 }
 
+#taskCategory {
+    width: 150px;
+    height: 50px;
+
+    padding: 0 14px;
+
+    border: 1px solid #2d3038;
+    border-radius: 11px;
+
+    background: #191b20;
+    color: #ffffff;
+
+    font-size: 15px;
+
+    outline: none;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+}
+
+#taskCategory:hover {
+    border-color: #4a4e5a;
+}
+
+#taskCategory:focus {
+    border-color: #6366f1;
+
+    box-shadow:
+        0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+#taskCategory option {
+    background: #191b20;
+    color: #ffffff;
+}
+
 
 /* =========================
    RESPONSYWNOŚĆ
@@ -593,4 +631,5 @@ h1 {
         padding: 7px 9px;
     }
 }
+
 
