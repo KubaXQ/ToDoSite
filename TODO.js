@@ -1,3 +1,28 @@
+var tasks = []
+
+window.addEventListener("load", function() {
+
+    var savedTasks = localStorage.getItem("tasks")
+        
+    if(savedTasks === null){
+        return
+    }
+    var tasksFromStorage = JSON.parse(savedTasks)
+
+   tasksFromStorage.forEach(function(task) {
+
+    tasks.push(task)
+    var taskElement = createTask(task)
+    setupTask(taskElement)
+
+    document.getElementById("taskListContainer").appendChild(taskElement)
+
+})
+
+
+})
+
+
 // Pobieramy z HTML dane przez id i przypisujemy do zmiennych
 var taskInput = document.getElementById("taskInput")
 var addTaskButton = document.getElementById("addTaskButton")
@@ -15,24 +40,20 @@ addTaskButton.addEventListener("click", function() {
         return
     }
 
-    var taskElement = createTask(taskInput,taskCategory)
-
-    
-    taskElement.addEventListener("click",function(event){
-
-   if (event.target.classList.contains("taskCheckbox")) {
-        return
+    var task = {
+    title: taskInput.value,
+    description: "",
+    category: taskCategory.value,
+    completed: false
     }
 
-    if (event.target.classList.contains("deleteTaskButton")) {
-        return
-    }
-    
-    openTaskDetails(taskElement)
-    
+    tasks.push(task)
 
+    saveTasks()
 
-    })  
+    var taskElement = createTask(task)
+
+    setupTask(taskElement)
     
     
 
@@ -103,14 +124,12 @@ categoryButtons.forEach(function(categoryButton) {
 
 })
 
-function createTask(taskInput,taskCategory)
+function createTask(task)
 {
 // Tworzymy nowy element <div>, który będzie reprezentował jedno zadanie
     var taskElement = document.createElement("div")
 
-    taskElement.dataset.category = taskCategory.value
-
-    taskElement.dataset.description = ""
+    taskElement.task = task
 
     // Dodajemy do niego klasę CSS "task"
     taskElement.classList.add("task")
@@ -125,6 +144,8 @@ function createTask(taskInput,taskCategory)
 
     // Ustawiamy jego typ na checkbox
     taskCheckbox.type = "checkbox"
+
+    taskCheckbox.checked = task.completed
 
     // Dodajemy klasę CSS
     taskCheckbox.classList.add("taskCheckbox")
@@ -144,6 +165,8 @@ function createTask(taskInput,taskCategory)
         taskTextElement.style.textDecoration =
             taskCheckbox.checked ? "line-through" : "none"
 
+        task.completed = taskCheckbox.checked
+        saveTasks()
         // Po zmianie statusu zadania aktualizujemy liczniki
         updateTaskCounts()
     })
@@ -158,7 +181,7 @@ function createTask(taskInput,taskCategory)
 
     // Pobieramy tekst wpisany przez użytkownika
     // i ustawiamy go jako zawartość <span>
-    taskTextElement.textContent = taskInput.value
+    taskTextElement.textContent = task.title
 
     // Dodajemy tekst do naszego zadania
     taskElement.appendChild(taskTextElement)
@@ -185,7 +208,17 @@ function createTask(taskInput,taskCategory)
         // W naszym przypadku jest nim <div class="task">.
         //
         // remove() usuwa ten konkretny element z DOM.
+
+        var taskIndex = tasks.findIndex(function(taskFromArray) {
+
+            return taskFromArray === task
+
+        })
+        tasks.splice(taskIndex, 1)
+
         deleteTaskButton.parentElement.remove()
+
+        saveTasks()
 
         // Po usunięciu zadania aktualizujemy liczniki
         updateTaskCounts()
@@ -287,7 +320,7 @@ function openTaskDetails(taskElement) {
     // Tworzymy zawartość panelu
     taskDetails.innerHTML =
         "<h2>" + taskElement.querySelector("span").textContent + "</h2>"
-        + "<textarea>" + taskElement.dataset.description + "</textarea>"
+        + "<textarea>" + taskElement.task.description + "</textarea>"
         + "<button class='saveDescriptionButton'>Zapisz</button>"
 
 
@@ -302,9 +335,9 @@ function openTaskDetails(taskElement) {
     // Zapisujemy opis
     saveDescriptionButton.addEventListener("click", function() {
 
-        taskElement.dataset.description =
-            descriptionTextarea.value
+        taskElement.task.description = descriptionTextarea.value
 
+        saveTasks()
     })
 
 
@@ -329,4 +362,28 @@ function openTaskDetails(taskElement) {
 
         taskElement.classList.remove("selected")
     })
+}
+
+function saveTasks() {
+ localStorage.setItem("tasks", JSON.stringify(tasks))
+}
+
+function setupTask(taskElement) {
+
+    taskElement.addEventListener("click",function(event){
+
+   if (event.target.classList.contains("taskCheckbox")) {
+        return
+    }
+
+    if (event.target.classList.contains("deleteTaskButton")) {
+        return
+    }
+    
+    openTaskDetails(taskElement)
+    
+
+
+    })  
+
 }
