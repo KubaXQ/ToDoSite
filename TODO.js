@@ -199,6 +199,7 @@ function createTask(task)
     // który będzie reprezentował jedno zadanie.
     var taskElement = document.createElement("div")
 
+    
     // Łączymy element DOM z obiektem danych,
     // który reprezentuje to konkretne zadanie.
     //
@@ -206,6 +207,8 @@ function createTask(task)
     // do danych poprzez taskElement.task.
     taskElement.task = task
 
+
+    
     // Dodajemy klasę CSS "task".
     taskElement.classList.add("task")
 
@@ -269,6 +272,9 @@ function createTask(task)
     // title z obiektu task.
     taskTextElement.textContent = task.title
 
+    if (task.completed) {
+    taskTextElement.style.textDecoration = "line-through"
+    }
     // Dodajemy tekst do elementu zadania.
     taskElement.appendChild(taskTextElement)
 
