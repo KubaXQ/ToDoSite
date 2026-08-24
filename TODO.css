@@ -84,6 +84,8 @@ h1 {
 
 #taskDetails {
     display: none;
+    position: relative;
+
 }
 
 #taskContent.details-open #taskListContainer {
@@ -190,6 +192,7 @@ h1 {
 #taskStatistics {
     display: grid;
 
+    margin-top: 2%;
     grid-template-columns: repeat(3, 1fr);
 
     gap: 14px;
@@ -429,6 +432,95 @@ h1 {
     border-color: #8b3f48;
 
     color: #ff7b86;
+}
+
+.saveDescriptionButton {
+    padding: 8px 14px;
+
+    border: 1px solid #383b44;
+    border-radius: 8px;
+
+    background: #6366f1;
+    color: white;
+
+    font-size: 14px;
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.saveDescriptionButton:hover {
+    background: #7477f5;
+}
+
+.closeTaskDetails {
+    position: absolute;
+
+    top: 15px;
+    right: 15px;
+
+    width: 32px;
+    height: 32px;
+
+    border: 1px solid #383b44;
+    border-radius: 8px;
+
+    background: transparent;
+    color: #aeb1ba;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.closeTaskDetails:hover {
+    background: #2a1c1f;
+    border-color: #8b3f48;
+    color: #ff7b86;
+}
+
+/* =========================
+   OPIS ZADANIA
+   ========================= */
+
+#taskDetails textarea {
+    width: 100%;
+    min-height: 180px;
+
+    margin-top: 10px;
+    padding: 12px 14px;
+
+    border: 1px solid #2d3038;
+    border-radius: 10px;
+
+    background: #191b20;
+    color: #eeeeee;
+
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+
+    resize: vertical;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+}
+
+#taskDetails textarea::placeholder {
+    color: #777b85;
+}
+
+#taskDetails textarea:focus {
+    border-color: #6366f1;
+
+    box-shadow:
+        0 0 0 3px rgba(99, 102, 241, 0.12);
 }
 
 

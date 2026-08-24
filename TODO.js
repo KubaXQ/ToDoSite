@@ -270,29 +270,63 @@ function updateTaskCounts() {
 // ==========================================
 
 function openTaskDetails(taskElement) {
-var selectedTasks = document.querySelectorAll(".task.selected")
+
+    var selectedTasks = document.querySelectorAll(".task.selected")
 
     selectedTasks.forEach(function(selectedTask) {
-    selectedTask.classList.remove("selected")
+        selectedTask.classList.remove("selected")
     })
 
     taskElement.classList.add("selected")
+
     taskContent.classList.add("details-open")
 
     taskDetails.style.display = "block"
 
+
+    // Tworzymy zawartość panelu
     taskDetails.innerHTML =
-    "<h2>" + taskElement.querySelector("span").textContent + "</h2>"
-    + "<textarea>" + taskElement.dataset.description + "</textarea>"
-    + "<button id='saveDescriptionButton'>Zapisz</button>"
+        "<h2>" + taskElement.querySelector("span").textContent + "</h2>"
+        + "<textarea>" + taskElement.dataset.description + "</textarea>"
+        + "<button class='saveDescriptionButton'>Zapisz</button>"
 
-var saveDescriptionButton = document.getElementById("saveDescriptionButton")
 
-var descriptionTextarea = taskDetails.querySelector("textarea")
+    // Pobieramy przyciski i textarea z aktualnie otwartego panelu
+    var saveDescriptionButton =
+        taskDetails.querySelector(".saveDescriptionButton")
 
+    var descriptionTextarea =
+        taskDetails.querySelector("textarea")
+
+
+    // Zapisujemy opis
     saveDescriptionButton.addEventListener("click", function() {
 
-        taskElement.dataset.description = descriptionTextarea.value
+        taskElement.dataset.description =
+            descriptionTextarea.value
 
+    })
+
+
+    // Tworzymy przycisk X
+    var closeButton = document.createElement("button")
+
+    closeButton.textContent = "X"
+
+    closeButton.classList.add("closeTaskDetails")
+
+    closeButton.type = "button"
+
+    taskDetails.appendChild(closeButton)
+
+
+    // Zamykamy panel
+    closeButton.addEventListener("click", function() {
+
+        taskDetails.style.display = "none"
+
+        taskContent.classList.remove("details-open")
+
+        taskElement.classList.remove("selected")
     })
 }
