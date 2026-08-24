@@ -1,32 +1,504 @@
-#taskInput{
-    width: 30%;
-    height: 40px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-#addTaskButton{
-    background-color: Blue;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    border-color: Blue;
-    cursor: pointer;
-    font-weight: bold;
-}
-.number{
-    font-size: 20px;
-    font-weight: bold;
-    color: black;
-}
-.task-section{
-    width: 152px;
-    height: 35px;
-    margin-top: 10px;
-    margin-right: 10px;
+/* =========================
+   RESET
+   ========================= */
 
-    background-color: #e5e7eb;
-    padding: 10px;
-    border-radius: 5px;
-    float: left;
-    background-blend-mode: overlay;
+* {
+    box-sizing: border-box;
 }
+
+
+/* =========================
+   BODY
+   ========================= */
+
+body {
+    margin: 0;
+    padding: 50px 20px;
+
+    min-height: 100vh;
+
+    font-family: Arial, sans-serif;
+
+    background: #101114;
+    color: #f1f1f1;
+}
+
+
+/* =========================
+   GŁÓWNA APLIKACJA
+   ========================= */
+
+.todo-app {
+    width: 100%;
+    max-width: 850px;
+
+    margin: 0 auto;
+}
+
+
+/* =========================
+   NAGŁÓWEK
+   ========================= */
+
+h1 {
+    margin: 0 0 30px 0;
+
+    text-align: center;
+
+    font-size: 38px;
+    font-weight: 700;
+
+    letter-spacing: -1px;
+}
+
+
+/* =========================
+   DODAWANIE ZADANIA
+   ========================= */
+
+#taskContent {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+}
+
+
+/* LISTA */
+
+#taskListContainer {
+    width: 100%;
+}
+
+
+/* PANEL SZCZEGÓŁÓW */
+
+#taskContent {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+}
+
+#taskListContainer {
+    flex: 1;
+}
+
+#taskDetails {
+    display: none;
+}
+
+#taskContent.details-open #taskListContainer {
+    flex: 1;
+}
+
+#taskContent.details-open #taskDetails {
+    display: block;
+    flex: 1;
+
+    min-height: 300px;
+
+    padding: 20px;
+
+    border: 1px solid #292c34;
+    border-radius: 12px;
+
+    background: #181a1f;
+}
+
+
+/* =========================
+   INPUT
+   ========================= */
+
+#taskInput {
+    width: 420px;
+    height: 50px;
+
+    padding: 0 16px;
+
+    border: 1px solid #2d3038;
+    border-radius: 11px;
+
+    background: #191b20;
+    color: #ffffff;
+
+    font-size: 16px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+}
+
+
+#taskInput::placeholder {
+    color: #777b85;
+}
+
+
+#taskInput:focus {
+    border-color: #6366f1;
+
+    box-shadow:
+        0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+
+/* =========================
+   PRZYCISK DODAWANIA
+   ========================= */
+
+#addTaskButton {
+    width: 150px;
+    height: 50px;
+
+    flex-shrink: 0;
+
+    border: none;
+    border-radius: 11px;
+
+    background: #6366f1;
+    color: white;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s,
+        transform 0.2s;
+}
+
+
+#addTaskButton:hover {
+    background: #7477f5;
+
+    transform: translateY(-1px);
+}
+
+
+#addTaskButton:active {
+    transform: translateY(0);
+}
+
+
+/* =========================
+   STATYSTYKI
+   ========================= */
+
+#taskStatistics {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 14px;
+
+    margin-bottom: 22px;
+}
+
+
+/* =========================
+   KARTA STATYSTYKI
+   ========================= */
+
+.task-section {
+    min-height: 95px;
+
+    padding: 18px 20px;
+
+    border: 1px solid #292c34;
+    border-radius: 14px;
+
+    background: #181a1f;
+
+    transition:
+        border-color 0.2s,
+        transform 0.2s;
+}
+
+
+.task-section:hover {
+    border-color: #393d47;
+
+    transform: translateY(-1px);
+}
+
+
+/* Nazwa statystyki */
+
+.task-section-title {
+    color: #9da2ae;
+
+    font-size: 14px;
+}
+
+.task.selected {
+    border-color: #6366f1;
+}
+
+
+
+
+/* Liczba */
+
+.number {
+    margin-top: 7px;
+
+    color: #ffffff;
+
+    font-size: 30px;
+    font-weight: 700;
+}
+
+
+/* =========================
+   KATEGORIE
+   ========================= */
+
+#categories {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 16px;
+}
+
+
+/* =========================
+   PRZYCISKI KATEGORII
+   ========================= */
+
+.categoryButton {
+    padding: 8px 16px;
+
+    border: 1px solid #30333c;
+    border-radius: 20px;
+
+    background: #181a1f;
+    color: #b8bdc8;
+
+    font-size: 14px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s,
+        border-color 0.2s,
+        color 0.2s,
+        transform 0.2s;
+}
+
+
+.categoryButton:hover {
+    background: #22242b;
+
+    border-color: #4a4e5a;
+
+    color: #ffffff;
+
+    transform: translateY(-1px);
+}
+
+
+/* Aktywna kategoria */
+
+.categoryButton.active {
+    background: #6366f1;
+
+    border-color: #6366f1;
+
+    color: #ffffff;
+}
+
+
+/* =========================
+   LISTA ZADAŃ
+   ========================= */
+
+#taskListContainer {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+    margin-top: 5px;
+}
+
+
+/* =========================
+   POJEDYNCZE ZADANIE
+   ========================= */
+
+.task {
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    min-height: 60px;
+
+    padding: 12px 15px;
+
+    border: 1px solid #292c34;
+    border-radius: 12px;
+
+    background: #181a1f;
+
+    transition:
+        border-color 0.2s,
+        background 0.2s,
+        transform 0.2s;
+}
+
+
+.task:hover {
+    border-color: #3a3d47;
+
+    background: #1b1d23;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================
+   CHECKBOX
+   ========================= */
+
+.taskCheckbox {
+    width: 19px;
+    height: 19px;
+
+    flex-shrink: 0;
+
+    cursor: pointer;
+
+    accent-color: #6366f1;
+}
+
+
+/* =========================
+   TEKST ZADANIA
+   ========================= */
+
+.task span {
+    flex: 1;
+
+    color: #eeeeee;
+
+    font-size: 16px;
+
+    word-break: break-word;
+}
+
+
+/* =========================
+   PRZYCISK USUWANIA
+   ========================= */
+
+.deleteTaskButton {
+    flex-shrink: 0;
+
+    padding: 8px 13px;
+
+    border: 1px solid #383b44;
+    border-radius: 8px;
+
+    background: transparent;
+
+    color: #aeb1ba;
+
+    font-size: 13px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s,
+        border-color 0.2s,
+        color 0.2s;
+}
+
+
+.deleteTaskButton:hover {
+    background: #2a1c1f;
+
+    border-color: #8b3f48;
+
+    color: #ff7b86;
+}
+
+
+/* =========================
+   RESPONSYWNOŚĆ
+   ========================= */
+
+@media (max-width: 700px) {
+
+    body {
+        padding: 30px 15px;
+    }
+
+
+    h1 {
+        font-size: 30px;
+    }
+
+
+    /* Input i przycisk jeden pod drugim */
+
+    #addTaskContainer {
+        flex-direction: column;
+
+        width: 100%;
+    }
+
+
+    #taskInput {
+        width: 100%;
+    }
+
+
+    #addTaskButton {
+        width: 100%;
+    }
+
+
+    /* Statystyki */
+
+    #taskStatistics {
+        grid-template-columns: 1fr;
+
+        gap: 10px;
+    }
+
+
+    /* Kategorie */
+
+    #categories {
+        overflow-x: auto;
+
+        padding-bottom: 4px;
+    }
+
+
+    .categoryButton {
+        white-space: nowrap;
+    }
+
+
+    /* Zadania */
+
+    .task {
+        padding: 11px 12px;
+    }
+
+
+    .deleteTaskButton {
+        padding: 7px 9px;
+    }
+}
+
