@@ -644,8 +644,28 @@ h1 {
     box-shadow:
         0 0 0 3px rgba(99, 102, 241, 0.12);
 }
+/* =========================================================
+   Select - Wybór zadania
+   ========================================================= */
+#taskCategoryDescription{
+    border: 1px solid #2d3038;
+    border-radius: 11px;
+    background: #191b20;
+    color: #ffffff;
+    font-size: 15px;
 
+    outline: none;
 
+    cursor: pointer;
+    margin-top: 10px;
+
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+}
+#taskCategoryDescription:hover {
+    border-color: #4a4e5a;
+}
 /* =========================================================
    RESPONSYWNOŚĆ - TELEFONY / MAŁE EKRANY
    ========================================================= */

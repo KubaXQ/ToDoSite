@@ -46,7 +46,7 @@ window.addEventListener("load", function() {
         document.getElementById("taskListContainer").appendChild(taskElement)
 
     })
-
+    updateTaskCounts()
 })
 
 
@@ -434,9 +434,11 @@ function openTaskDetails(taskElement) {
     // należących do aktualnie wybranego zadania.
     taskDetails.innerHTML =
         "<input value='" + taskElement.querySelector("span").textContent + "' id='title'>"
-        + "<textarea>" +
-        taskElement.task.description +
-        "</textarea>"
+        + "<select id='taskCategoryDescription'>"
+        +"<option value='projects'>Projekty</option>"
+        +"<option value='personal'>Osobiste</option>" 
+        +"</select>"
+        + "<textarea>" + taskElement.task.description + "</textarea>"
         + "<button class='saveDescriptionButton'>Zapisz</button>"
 
 
@@ -449,8 +451,9 @@ function openTaskDetails(taskElement) {
     // Pobieramy textarea z aktualnie otwartego panelu.
     var descriptionTextarea = taskDetails.querySelector("textarea")
 
+    // Pobieramy zmiany wyborów w opisie
     var changeTitle = document.getElementById("title")
-
+    var changeCategory = document.getElementById("taskCategoryDescription")
 
     // ==========================================
     // ZAPISYWANIE OPISU
@@ -463,6 +466,9 @@ function openTaskDetails(taskElement) {
         taskElement.task.description = descriptionTextarea.value
 
         taskElement.task.title = changeTitle.value
+        taskElement.task.category = changeCategory.value
+
+        taskElement.dataset.category = changeCategory.value
 
 
         taskElement.querySelector("span").textContent = changeTitle.value
