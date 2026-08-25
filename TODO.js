@@ -433,22 +433,23 @@ function openTaskDetails(taskElement) {
     // Tworzymy zawartość panelu na podstawie danych
     // należących do aktualnie wybranego zadania.
     taskDetails.innerHTML =
-        "<h2>" +
-        taskElement.querySelector("span").textContent +
-        "</h2>"
+        "<input value='" + taskElement.querySelector("span").textContent + "' id='title'>"
         + "<textarea>" +
         taskElement.task.description +
         "</textarea>"
         + "<button class='saveDescriptionButton'>Zapisz</button>"
 
 
+    
+
     // Pobieramy przycisk zapisu z aktualnie otwartego panelu.
     var saveDescriptionButton =
         taskDetails.querySelector(".saveDescriptionButton")
 
     // Pobieramy textarea z aktualnie otwartego panelu.
-    var descriptionTextarea =
-        taskDetails.querySelector("textarea")
+    var descriptionTextarea = taskDetails.querySelector("textarea")
+
+    var changeTitle = document.getElementById("title")
 
 
     // ==========================================
@@ -459,8 +460,12 @@ function openTaskDetails(taskElement) {
     saveDescriptionButton.addEventListener("click", function() {
 
         // Aktualizujemy opis w obiekcie task.
-        taskElement.task.description =
-            descriptionTextarea.value
+        taskElement.task.description = descriptionTextarea.value
+
+        taskElement.task.title = changeTitle.value
+
+
+        taskElement.querySelector("span").textContent = changeTitle.value
 
         // Zapisujemy zmienione dane do localStorage.
         saveTasks()

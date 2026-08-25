@@ -563,7 +563,38 @@ h1 {
 
     color: #ff7b86;
 }
+/* =========================================================
+   Title - Tytuł zadania
+   ========================================================= */
+#title {
+    width: 80%;
 
+    padding: 10px 12px;
+
+    background: #191b20;
+
+    border: 1px solid #2d3038;
+    border-radius: 10px;
+
+    color: #ffffff;
+
+    font-family: Arial, sans-serif;
+    font-size: 22px;
+    font-weight: bold;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+}
+
+#title:focus {
+    border-color: #6366f1;
+
+    box-shadow:
+        0 0 0 3px rgba(99, 102, 241, 0.12);
+}
 
 /* =========================================================
    TEXTAREA - OPIS ZADANIA
