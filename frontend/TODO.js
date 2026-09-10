@@ -152,34 +152,8 @@ categoryButtons.forEach(function(categoryButton) {
         // Dodajemy aktywny styl klikniętemu przyciskowi.
         categoryButton.classList.add("active")
 
-
-        // Pobieramy wszystkie zadania znajdujące się w DOM.
-        var taskElements = document.querySelectorAll(".task")
-
-        // Sprawdzamy każde zadanie.
-        taskElements.forEach(function(taskElement) {
-
-            // Jeżeli wybrana jest kategoria "all",
-            // pokazujemy każde zadanie.
-            if (categoryButton.dataset.category === "all") {
-                taskElement.style.display = "flex"
-            }
-
-            // Jeżeli kategoria zadania odpowiada
-            // wybranej kategorii, pokazujemy zadanie.
-            else if (
-                taskElement.dataset.category ===
-                categoryButton.dataset.category
-            ) {
-                taskElement.style.display = "flex"
-            }
-
-            // Pozostałe zadania ukrywamy.
-            else {
-                taskElement.style.display = "none"
-            }
-
-        })
+        filterTasks(categoryButton.dataset.category)
+        
 
     })
 
@@ -207,6 +181,7 @@ function createTask(task)
     // do danych poprzez taskElement.task.
     taskElement.task = task
 
+    taskElement.dataset.category = task.category
 
     
     // Dodajemy klasę CSS "task".
@@ -475,6 +450,10 @@ function openTaskDetails(taskElement) {
 
         // Zapisujemy zmienione dane do localStorage.
         saveTasks()
+
+        var activeCategory = document.querySelector(".categoryButton.active")
+
+        filterTasks(activeCategory.dataset.category)
     })
 
 
@@ -564,4 +543,34 @@ function setupTask(taskElement) {
 
     })
 
+}
+
+
+function filterTasks(category){
+    // Pobieramy wszystkie zadania znajdujące się w DOM.
+        var taskElements = document.querySelectorAll(".task")
+
+        // Sprawdzamy każde zadanie.
+        taskElements.forEach(function(taskElement) {
+
+            // Jeżeli wybrana jest kategoria "all",
+            // pokazujemy każde zadanie.
+            if (category === "all") {
+                taskElement.style.display = "flex"
+            }
+
+            // Jeżeli kategoria zadania odpowiada
+            // wybranej kategorii, pokazujemy zadanie.
+            else if (
+                taskElement.dataset.category === category
+            ) {
+                taskElement.style.display = "flex"
+            }
+
+            // Pozostałe zadania ukrywamy.
+            else {
+                taskElement.style.display = "none"
+            }
+
+        })
 }
