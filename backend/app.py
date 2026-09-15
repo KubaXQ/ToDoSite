@@ -32,6 +32,21 @@ def add_task():
         "success": True
     }), 201
 
+@app.route("/api/tasks/<int:id>", methods=["DELETE"])
+def delete_task(id):
+    db = get_db()
+    cursor = db.cursor()
+
+    cursor.execute('''
+    Delete from tasks where id = ?
+
+    ''',(id,))
+    db.commit()
+    db.close()
+    return jsonify({
+        "message": "Task został usuniety",
+        "success": True
+    }), 200
 
 
 
