@@ -16,6 +16,29 @@ def get_tasks():
 @app.route("/api/tasks", methods=["POST"])
 def add_task():
     data = request.json
+
+    required_fields = ["title","completed"]
+
+    for field in required_fields:
+        if field not in data:
+            return jsonify({
+                "message": f"Brakuje pola: {field}",
+                "success": False
+            }), 400
+        elif isinstance(data[field], str) and data[field].strip() == "":
+            return jsonify({
+                "message": f"Pole jest puste: {field}",
+                "success": False
+            }), 400
+        elif field == "completed" and (not isinstance(data[field], int) or data[field] not in [0, 1]):
+            return jsonify({
+                "message": f"Pole {field} ma nieprawidlowe dane",
+                "success": False
+            }), 400
+
+
+    
+
     db = get_db()
     cursor = db.cursor()
 
@@ -41,6 +64,12 @@ def delete_task(id):
     Delete from tasks where id = ?
 
     ''',(id,))
+    if cursor.rowcount == 0:
+        db.close()
+        return jsonify({
+        "message": "Task nie został znaleziony",
+        "success": False
+    }), 404
     db.commit()
     db.close()
     return jsonify({
@@ -57,10 +86,32 @@ def update_task(id):
     fields = []
     values = []
 
-    for column in ["title", "description", "category", "completed"]:
+    for column in ["title", "completed"]:
         if column in data:
             fields.append(column)
             values.append(data[column])
+
+            if isinstance(data[column], str) and data[column].strip() == "":
+                return jsonify({
+                    "message": f"Pole jest puste: {column}",
+                    "success": False
+                }), 400
+
+            elif column == "completed" and (
+                not isinstance(data[column], int) or data[column] not in [0, 1]
+            ):
+                return jsonify({
+                    "message": f"Pole {column} ma nieprawidlowe dane",
+                    "success": False
+                }), 400
+
+    if not fields:
+        db.close()
+        return jsonify({
+            "message": "Brak danych do aktualizacji",
+            "success": False
+        }), 400
+
 
     set_clause = ", ".join(f"{field} = ?" for field in fields)
 
@@ -68,7 +119,12 @@ def update_task(id):
         f"UPDATE tasks SET {set_clause} WHERE id = ?",
         values + [id]
     )
-
+    if cursor.rowcount == 0:
+        db.close()
+        return jsonify({
+        "message": "Task nie został znaleziony",
+        "success": False
+    }), 404
     db.commit()
     db.close()
 
