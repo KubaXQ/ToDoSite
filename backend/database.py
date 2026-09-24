@@ -11,6 +11,8 @@ def init_db():
     CREATE TABLE IF NOT EXISTS tasks (
     id INTEGER PRIMARY KEY,
     title VARCHAR(30) NOT NULL,
+    description TEXT,
+    category VARCHAR(30) NOT NULL,
     completed INTEGER)'''
     )
     conn.commit()

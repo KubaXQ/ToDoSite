@@ -1,8 +1,9 @@
 from flask import Flask,request,jsonify
 from database import get_db
+from flask_cors import CORS
 
 app = Flask(__name__)
-
+CORS(app)
 
 @app.route("/api/tasks", methods=["GET"])
 def get_tasks():
@@ -17,7 +18,7 @@ def get_tasks():
 def add_task():
     data = request.json
 
-    required_fields = ["title","completed"]
+    required_fields = ["title","completed","category"]
 
     for field in required_fields:
         if field not in data:
@@ -37,15 +38,18 @@ def add_task():
             }), 400
 
 
+
     
 
     db = get_db()
     cursor = db.cursor()
 
+    description = data.get("description", "")
+
     cursor.execute('''
-    Insert into tasks (title, completed)
-    VALUES(?,?)
-    ''',(data["title"],data["completed"]))
+    Insert into tasks (title, completed,description,category)
+    VALUES(?,?,?,?)
+    ''',(data["title"],data["completed"],description,data["category"]))
 
     db.commit()
     db.close()
@@ -78,7 +82,7 @@ def delete_task(id):
     }), 200
 
 @app.route("/api/tasks/<int:id>", methods=["PATCH"])
-def update_task(id):
+def update_task(id): 
     db = get_db()
     cursor = db.cursor()
     data = request.json
@@ -86,16 +90,17 @@ def update_task(id):
     fields = []
     values = []
 
-    for column in ["title", "completed"]:
+    for column in ["title", "completed","description","category"]:
         if column in data:
             fields.append(column)
             values.append(data[column])
 
-            if isinstance(data[column], str) and data[column].strip() == "":
-                return jsonify({
-                    "message": f"Pole jest puste: {column}",
-                    "success": False
-                }), 400
+            if column == "title" or column == "category":
+                if isinstance(data[column], str) and data[column].strip() == "":
+                    return jsonify({
+                        "message": f"Pole jest puste: {column}",
+                        "success": False
+                    }), 400
 
             elif column == "completed" and (
                 not isinstance(data[column], int) or data[column] not in [0, 1]
