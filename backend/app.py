@@ -51,10 +51,13 @@ def add_task():
     VALUES(?,?,?,?)
     ''',(data["title"],data["completed"],description,data["category"]))
 
+    task_id = cursor.lastrowid
+
     db.commit()
     db.close()
     
     return jsonify({
+        "id": task_id,
         "message": "Task został utworzony",
         "success": True
     }), 201

@@ -39,7 +39,7 @@ var taskContent = document.getElementById("taskContent")
 // ==========================================
 
 // Nasłuchujemy kliknięcia przycisku "Dodaj Zadanie".
-addTaskButton.addEventListener("click", function() {
+addTaskButton.addEventListener("click", async function() {
 
     // Sprawdzamy, czy użytkownik faktycznie coś wpisał.
     // trim() usuwa spacje z początku i końca tekstu.
@@ -66,10 +66,14 @@ addTaskButton.addEventListener("click", function() {
         // Nowe zadanie nie jest jeszcze ukończone.
         completed: false
     }
+    
+    
 
     // Dodajemy obiekt task do głównej tablicy zadań.
     tasks.push(task)
 
+    await addTaskToAPI(task)
+    
     // Zapisujemy aktualną tablicę do localStorage.
     saveTasks()
 
@@ -184,7 +188,7 @@ function createTask(task)
     // ==========================================
 
     // Reagujemy na kliknięcie checkboxa.
-    taskCheckbox.addEventListener("click", function() {
+    taskCheckbox.addEventListener("click", async function() {
 
         // Jeżeli checkbox jest zaznaczony,
         // przekreślamy tekst zadania.
@@ -196,6 +200,8 @@ function createTask(task)
 
         // Aktualizujemy dane obiektu task.
         task.completed = taskCheckbox.checked
+
+        await updateTaskInAPI(task)
 
         // Zapisujemy zmienione dane do localStorage.
         saveTasks()
@@ -553,7 +559,9 @@ async function loadTasks() {
     var task = {
         id: taskFromAPI[0],
         title: taskFromAPI[1],
-        completed: taskFromAPI[2] == 1 ? true : false
+        description: taskFromAPI[2],
+        category: taskFromAPI[3],
+        completed: taskFromAPI[4] == 1 ? true : false
     }
     // Dodajemy odtworzone zadanie do głównej tablicy.
         tasks.push(task)
@@ -570,4 +578,40 @@ async function loadTasks() {
 })
 
     console.log(data);
+}
+async function addTaskToAPI(task) {
+    const taskToSend = {
+    title: task.title,
+    description: task.description,
+    category: task.category,
+    completed: task.completed ? 1 : 0
+}
+const response = await fetch("http://127.0.0.1:5000/api/tasks", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    
+    body: JSON.stringify(taskToSend)
+})
+const data = await response.json();
+
+task.id = data.id
+    console.log(data);
+}
+async function updateTaskInAPI(task) {
+    const taskToSend = {
+        completed: task.completed ? 1 : 0
+    }
+
+    const response = await fetch(
+        "http://127.0.0.1:5000/api/tasks/" + task.id,
+        {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(taskToSend)
+        }
+    )
 }
