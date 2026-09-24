@@ -15,37 +15,6 @@ var tasks = []
 // Po załadowaniu strony próbujemy odtworzyć wcześniej zapisane zadania.
 window.addEventListener("load", function() {
     loadTasks()
-    // Pobieramy dane zapisane wcześniej pod kluczem "tasks".
-    // localStorage zwraca dane jako tekst.
-    var savedTasks = localStorage.getItem("tasks")
-
-    // Jeżeli nie ma zapisanych danych, nie mamy czego odtwarzać.
-    if(savedTasks === null){
-        return
-    }
-
-    // JSON.parse() zamienia tekst JSON z powrotem
-    // na tablicę obiektów JavaScript.
-    var tasksFromStorage = JSON.parse(savedTasks)
-
-    // Przechodzimy przez wszystkie zapisane zadania
-    // i odtwarzamy je na stronie.
-    tasksFromStorage.forEach(function(task) {
-
-        // Dodajemy odtworzone zadanie do głównej tablicy.
-        tasks.push(task)
-
-        // Tworzymy element HTML reprezentujący zadanie.
-        var taskElement = createTask(task)
-
-        // Dodajemy do zadania listenery i jego zachowanie.
-        setupTask(taskElement)
-
-        // Dodajemy utworzony element do DOM,
-        // dzięki czemu zadanie pojawia się na stronie.
-        document.getElementById("taskListContainer").appendChild(taskElement)
-
-    })
     updateTaskCounts()
     
 })
@@ -578,6 +547,27 @@ function filterTasks(category){
 async function loadTasks() {
     const response = await fetch("http://127.0.0.1:5000/api/tasks");
     const data = await response.json();
+
+    data.tasks.forEach(function(taskFromAPI) {
+
+    var task = {
+        id: taskFromAPI[0],
+        title: taskFromAPI[1],
+        completed: taskFromAPI[2] == 1 ? true : false
+    }
+    // Dodajemy odtworzone zadanie do głównej tablicy.
+        tasks.push(task)
+
+        // Tworzymy element HTML reprezentujący zadanie.
+        var taskElement = createTask(task)
+
+        // Dodajemy do zadania listenery i jego zachowanie.
+        setupTask(taskElement)
+
+        // Dodajemy utworzony element do DOM,
+        // dzięki czemu zadanie pojawia się na stronie.
+        document.getElementById("taskListContainer").appendChild(taskElement)
+})
 
     console.log(data);
 }
