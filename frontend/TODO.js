@@ -201,7 +201,10 @@ function createTask(task)
         // Aktualizujemy dane obiektu task.
         task.completed = taskCheckbox.checked
 
-        await updateTaskInAPI(task)
+        await updateTaskInAPI(task,
+            {
+                completed: task.completed
+            })
 
         // Zapisujemy zmienione dane do localStorage.
         saveTasks()
@@ -266,12 +269,14 @@ function createTask(task)
         //
         // Pierwszy argument to indeks,
         // drugi oznacza liczbę elementów do usunięcia.
+        await deleteTaskFromAPI(task)
+
         tasks.splice(taskIndex, 1)
 
         // Usuwamy wizualny element zadania z DOM.
         deleteTaskButton.parentElement.remove()
 
-        deleteTaskFromAPI(task)
+        
         // Zapisujemy zmienioną tablicę do localStorage.
         saveTasks()
 
@@ -412,8 +417,15 @@ function openTaskDetails(taskElement) {
     // ==========================================
 
     // Reagujemy na kliknięcie przycisku "Zapisz".
-    saveDescriptionButton.addEventListener("click", function() {
+    saveDescriptionButton.addEventListener("click", async function() {
 
+        await updateTaskInAPI(taskElement.task,
+            {
+                description: descriptionTextarea.value,
+                title: changeTitle.value,
+                category: changeCategory.value,
+
+            })
         // Aktualizujemy opis w obiekcie task.
         taskElement.task.description = descriptionTextarea.value
 
@@ -600,10 +612,8 @@ const data = await response.json();
 task.id = data.id
     console.log(data);
 }
-async function updateTaskInAPI(task) {
-    const taskToSend = {
-        completed: task.completed ? 1 : 0
-    }
+async function updateTaskInAPI(task,fields) {
+    
 
     const response = await fetch(
         "http://127.0.0.1:5000/api/tasks/" + task.id,
@@ -612,10 +622,10 @@ async function updateTaskInAPI(task) {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(taskToSend)
+            body: JSON.stringify(fields)
         }
     )
-}
+}   
 async function deleteTaskFromAPI(task) {
 const response = await fetch(
     "http://127.0.0.1:5000/api/tasks/" + task.id,
