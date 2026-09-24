@@ -1,18 +1,6 @@
-// ==========================================
-// DANE APLIKACJI
-// ==========================================
 
-// Tablica przechowująca wszystkie zadania.
-// Jest głównym źródłem danych naszej aplikacji.
-// To właśnie jej zawartość zapisujemy później w localStorage.
 var tasks = []
 
-
-// ==========================================
-// WCZYTYWANIE ZADAŃ Z localStorage
-// ==========================================
-
-// Po załadowaniu strony próbujemy odtworzyć wcześniej zapisane zadania.
 window.addEventListener("load", function() {
     loadTasks()
     updateTaskCounts()
@@ -74,8 +62,7 @@ addTaskButton.addEventListener("click", async function() {
 
     await addTaskToAPI(task)
     
-    // Zapisujemy aktualną tablicę do localStorage.
-    saveTasks()
+    
 
     // Na podstawie obiektu task tworzymy jego wizualną reprezentację.
     var taskElement = createTask(task)
@@ -206,8 +193,6 @@ function createTask(task)
                 completed: task.completed
             })
 
-        // Zapisujemy zmienione dane do localStorage.
-        saveTasks()
 
         // Aktualizujemy liczniki zadań.
         updateTaskCounts()
@@ -276,9 +261,7 @@ function createTask(task)
         // Usuwamy wizualny element zadania z DOM.
         deleteTaskButton.parentElement.remove()
 
-        
-        // Zapisujemy zmienioną tablicę do localStorage.
-        saveTasks()
+
 
         // Aktualizujemy liczniki.
         updateTaskCounts()
@@ -437,9 +420,6 @@ function openTaskDetails(taskElement) {
 
         taskElement.querySelector("span").textContent = changeTitle.value
 
-        // Zapisujemy zmienione dane do localStorage.
-        saveTasks()
-
         var activeCategory = document.querySelector(".categoryButton.active")
 
         filterTasks(activeCategory.dataset.category)
@@ -489,17 +469,6 @@ function openTaskDetails(taskElement) {
 // ==========================================
 // ZAPISYWANIE DANYCH
 // ==========================================
-
-// localStorage przechowuje dane jako tekst,
-// dlatego zamieniamy tablicę obiektów JavaScript
-// na JSON za pomocą JSON.stringify().
-function saveTasks() {
-
-    localStorage.setItem(
-        "tasks",
-        JSON.stringify(tasks)
-    )
-}
 
 
 // ==========================================
