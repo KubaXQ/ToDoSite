@@ -14,7 +14,7 @@ var tasks = []
 
 // Po załadowaniu strony próbujemy odtworzyć wcześniej zapisane zadania.
 window.addEventListener("load", function() {
-
+    loadTasks()
     // Pobieramy dane zapisane wcześniej pod kluczem "tasks".
     // localStorage zwraca dane jako tekst.
     var savedTasks = localStorage.getItem("tasks")
@@ -47,6 +47,7 @@ window.addEventListener("load", function() {
 
     })
     updateTaskCounts()
+    
 })
 
 
@@ -573,4 +574,10 @@ function filterTasks(category){
             }
 
         })
+}
+async function loadTasks() {
+    const response = await fetch("http://127.0.0.1:5000/api/tasks");
+    const data = await response.json();
+
+    console.log(data);
 }
