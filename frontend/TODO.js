@@ -1,191 +1,144 @@
-
+// Dane zadań w pamięci.
 var tasks = []
 
+// Wczytanie zadań po starcie.
 window.addEventListener("load", function() {
     loadTasks()
     updateTaskCounts()
-    
 })
 
+// Pobieranie elementów z HTML.
 
-// ==========================================
-// POBIERANIE ELEMENTÓW Z HTML
-// ==========================================
-
-// Pobieramy elementy HTML po ich id
-// i zapisujemy je w zmiennych,
-// aby móc później manipulować nimi w JavaScript.
+// Elementy HTML.
 var taskInput = document.getElementById("taskInput")
 var addTaskButton = document.getElementById("addTaskButton")
 var taskCategory = document.getElementById("taskCategory")
 var taskDetails = document.getElementById("taskDetails")
 var taskContent = document.getElementById("taskContent")
 
+// Dodawanie nowego zadania.
 
-// ==========================================
-// DODAWANIE NOWEGO ZADANIA
-// ==========================================
-
-// Nasłuchujemy kliknięcia przycisku "Dodaj Zadanie".
+// Obsługa dodawania zadania.
 addTaskButton.addEventListener("click", async function() {
 
-    // Sprawdzamy, czy użytkownik faktycznie coś wpisał.
-    // trim() usuwa spacje z początku i końca tekstu.
+    // Sprawdzamy, czy tytuł nie jest pusty.
     if (taskInput.value.trim() === "") {
         alert("Please enter a task.")
         return
     }
 
-    // Tworzymy obiekt reprezentujący jedno zadanie.
-    //
-    // Obiekt przechowuje dane zadania,
-    // a nie jego wygląd na stronie.
+    // Tworzymy obiekt zadania.
     var task = {
 
-        // Tytuł zadania pobieramy z inputa.
+        // Tytuł z inputa.
         title: taskInput.value,
 
-        // Na początku zadanie nie ma opisu.
+        // Początkowo pusty opis.
         description: "",
 
-        // Kategorię pobieramy z selecta.
+        // Kategoria z selecta.
         category: taskCategory.value,
 
-        // Nowe zadanie nie jest jeszcze ukończone.
+        // Domyślnie nieukończone.
         completed: false
     }
-    
-    
 
-    // Dodajemy obiekt task do głównej tablicy zadań.
+    // Dodajemy zadanie do tablicy.
     tasks.push(task)
 
     await addTaskToAPI(task)
-    
-    
 
-    // Na podstawie obiektu task tworzymy jego wizualną reprezentację.
+    // Tworzymy element zadania.
     var taskElement = createTask(task)
 
-    // Dodajemy zachowanie i listenery do elementu zadania.
+    // Dodajemy listenery.
     setupTask(taskElement)
 
+    // Dodanie zadania do strony.
 
-    // ==========================================
-    // DODANIE ZADANIA DO STRONY
-    // ==========================================
-
-    // Pobieramy kontener wszystkich zadań.
+    // Pobieramy kontener zadań.
     var taskListContainer =
         document.getElementById("taskListContainer")
 
-    // Dodajemy gotowe zadanie do DOM,
-    // dzięki czemu użytkownik widzi je na stronie.
+    // Dodajemy zadanie do DOM.
     taskListContainer.appendChild(taskElement)
 
-
-    // Czyścimy input po dodaniu zadania.
+    // Czyścimy input.
     taskInput.value = ""
 
-    // Aktualizujemy liczniki zadań.
+    // Aktualizujemy liczniki.
     updateTaskCounts()
 })
 
+// Obsługa kategorii.
 
-// ==========================================
-// OBSŁUGA KATEGORII
-// ==========================================
-
-// Pobieramy wszystkie przyciski kategorii.
+// Pobieramy przyciski kategorii.
 var categoryButtons =
     document.querySelectorAll(".categoryButton")
 
-// Dodajemy listener do każdego przycisku kategorii.
+// Obsługujemy przyciski kategorii.
 categoryButtons.forEach(function(categoryButton) {
 
     categoryButton.addEventListener("click", function() {
 
-        // Usuwamy aktywny styl ze wszystkich przycisków.
+        // Czyścimy aktywny styl.
         categoryButtons.forEach(function(button) {
             button.classList.remove("active")
         })
 
-        // Dodajemy aktywny styl klikniętemu przyciskowi.
+        // Ustawiamy aktywną kategorię.
         categoryButton.classList.add("active")
 
         filterTasks(categoryButton.dataset.category)
-        
 
     })
 
 })
 
+// Tworzenie wizualnego zadania.
 
-// ==========================================
-// TWORZENIE WIZUALNEGO ZADANIA
-// ==========================================
-
-// Na podstawie obiektu task tworzymy elementy HTML,
-// które użytkownik widzi na stronie.
+// Tworzymy HTML zadania.
 function createTask(task)
 {
 
-    // Tworzymy nowy element <div>,
-    // który będzie reprezentował jedno zadanie.
+    // Tworzymy element zadania.
     var taskElement = document.createElement("div")
 
-    
-    // Łączymy element DOM z obiektem danych,
-    // który reprezentuje to konkretne zadanie.
-    //
-    // Dzięki temu możemy później dostać się
-    // do danych poprzez taskElement.task.
+    // Łączymy DOM z obiektem task.
     taskElement.task = task
 
     taskElement.dataset.category = task.category
 
-    
-    // Dodajemy klasę CSS "task".
+    // Dodajemy klasę task.
     taskElement.classList.add("task")
 
+    // Tworzenie checkboxa.
 
-    // ==========================================
-    // TWORZENIE CHECKBOXA
-    // ==========================================
-
-    // Tworzymy nowy element <input>.
+    // Tworzymy checkbox.
     var taskCheckbox = document.createElement("input")
 
-    // Ustawiamy jego typ na checkbox.
+    // Ustawiamy typ checkbox.
     taskCheckbox.type = "checkbox"
 
-    // Ustawiamy checkbox zgodnie z wartością
-    // completed przechowywaną w obiekcie task.
+    // Ustawiamy stan checkboxa.
     taskCheckbox.checked = task.completed
 
     // Dodajemy klasę CSS.
     taskCheckbox.classList.add("taskCheckbox")
 
-    // Wkładamy checkbox do naszego zadania.
+    // Dodajemy checkbox do zadania.
     taskElement.appendChild(taskCheckbox)
 
+    // Obsługa checkboxa.
 
-    // ==========================================
-    // OBSŁUGA CHECKBOXA
-    // ==========================================
-
-    // Reagujemy na kliknięcie checkboxa.
+    // Obsługa zmiany statusu.
     taskCheckbox.addEventListener("click", async function() {
 
-        // Jeżeli checkbox jest zaznaczony,
-        // przekreślamy tekst zadania.
-        //
-        // Jeżeli nie jest zaznaczony,
-        // usuwamy przekreślenie.
+        // Aktualizujemy przekreślenie.
         taskTextElement.style.textDecoration =
             taskCheckbox.checked ? "line-through" : "none"
 
-        // Aktualizujemy dane obiektu task.
+        // Aktualizujemy task.
         task.completed = taskCheckbox.checked
 
         await updateTaskInAPI(task,
@@ -193,36 +146,28 @@ function createTask(task)
                 completed: task.completed
             })
 
-
-        // Aktualizujemy liczniki zadań.
+        // Aktualizujemy liczniki.
         updateTaskCounts()
     })
 
+    // Tworzenie tekstu zadania.
 
-    // ==========================================
-    // TWORZENIE TEKSTU ZADANIA
-    // ==========================================
-
-    // Tworzymy element <span>,
-    // który będzie zawierał tekst zadania.
+    // Tworzymy tekst zadania.
     var taskTextElement = document.createElement("span")
 
-    // Ustawiamy tekst na podstawie właściwości
-    // title z obiektu task.
+    // Ustawiamy tytuł.
     taskTextElement.textContent = task.title
 
     if (task.completed) {
-    taskTextElement.style.textDecoration = "line-through"
+        taskTextElement.style.textDecoration = "line-through"
     }
-    // Dodajemy tekst do elementu zadania.
+
+    // Dodajemy tekst do zadania.
     taskElement.appendChild(taskTextElement)
 
+    // Tworzenie przycisku usuwania.
 
-    // ==========================================
-    // TWORZENIE PRZYCISKU USUWANIA
-    // ==========================================
-
-    // Tworzymy przycisk.
+    // Tworzymy przycisk usuwania.
     var deleteTaskButton = document.createElement("button")
 
     // Ustawiamy tekst przycisku.
@@ -231,175 +176,138 @@ function createTask(task)
     // Dodajemy klasę CSS.
     deleteTaskButton.classList.add("deleteTaskButton")
 
+    // Obsługa usuwania zadania.
 
-    // ==========================================
-    // OBSŁUGA USUWANIA ZADANIA
-    // ==========================================
-
-    // Reagujemy na kliknięcie przycisku usuwania.
+    // Obsługa usuwania.
     deleteTaskButton.addEventListener("click", async function() {
 
-        // Szukamy indeksu konkretnego obiektu task
-        // w tablicy przechowującej wszystkie zadania.
+        // Szukamy zadania w tablicy.
         var taskIndex = tasks.findIndex(function(taskFromArray) {
 
-            // Sprawdzamy, czy element z tablicy
-            // jest dokładnie tym samym obiektem,
-            // który reprezentuje aktualne zadanie.
+            // Sprawdzamy obiekt task.
             return taskFromArray === task
 
         })
 
-        // Usuwamy znaleziony obiekt z tablicy.
-        //
-        // Pierwszy argument to indeks,
-        // drugi oznacza liczbę elementów do usunięcia.
+        // Usuwamy zadanie z API.
         await deleteTaskFromAPI(task)
 
         tasks.splice(taskIndex, 1)
 
-        // Usuwamy wizualny element zadania z DOM.
+        // Usuwamy zadanie z DOM.
         deleteTaskButton.parentElement.remove()
-
-
 
         // Aktualizujemy liczniki.
         updateTaskCounts()
     })
 
-
-    // Dodajemy przycisk usuwania do zadania.
+    // Dodajemy przycisk do zadania.
     taskElement.appendChild(deleteTaskButton)
 
-    // Zwracamy gotowy element DOM,
-    // aby można było później dodać go do strony.
+    // Zwracamy element zadania.
     return taskElement
 }
 
-
-// ==========================================
-// AKTUALIZOWANIE LICZNIKÓW
-// ==========================================
+// Aktualizowanie liczników.
 
 function updateTaskCounts() {
 
-    // Pobieramy wszystkie elementy reprezentujące zadania.
+    // Pobieramy zadania z DOM.
     var taskElements = document.querySelectorAll(".task")
 
-    // Liczba wszystkich zadań to liczba znalezionych elementów .task.
+    // Liczymy wszystkie zadania.
     document.getElementById("allTasksCount").textContent =
         taskElements.length
 
-
-    // Pobieramy wszystkie checkboxy należące do zadań.
+    // Pobieramy checkboxy.
     var taskCheckboxes =
         document.querySelectorAll(".taskCheckbox")
 
+    // Liczba zadań do zrobienia.
 
-    // ==========================================
-    // LICZBA ZADAŃ DO ZROBIENIA
-    // ==========================================
-
-    // Na początku mamy 0 zadań do zrobienia.
+    // Licznik zadań do zrobienia.
     var todoTaskCount = 0
 
-    // Przechodzimy przez każdy checkbox.
+    // Sprawdzamy checkboxy.
     taskCheckboxes.forEach(function(taskCheckbox) {
 
-        // Jeżeli checkbox NIE jest zaznaczony,
-        // oznacza to, że zadanie nie zostało ukończone.
+        // Liczymy nieukończone zadania.
         if (!taskCheckbox.checked) {
             todoTaskCount++
         }
     })
 
-    // Wyświetlamy liczbę zadań do zrobienia.
+    // Wyświetlamy licznik.
     document.getElementById("doZrobieniaCount").textContent =
         todoTaskCount
 
+    // Liczba ukończonych zadań.
 
-    // ==========================================
-    // LICZBA UKOŃCZONYCH ZADAŃ
-    // ==========================================
-
-    // Na początku mamy 0 ukończonych zadań.
+    // Licznik ukończonych zadań.
     var completedTaskCount = 0
 
-    // Ponownie przechodzimy przez wszystkie checkboxy.
+    // Sprawdzamy ukończone zadania.
     taskCheckboxes.forEach(function(taskCheckbox) {
 
-        // Jeżeli checkbox jest zaznaczony,
-        // oznacza to, że zadanie zostało ukończone.
+        // Liczymy ukończone zadania.
         if (taskCheckbox.checked) {
             completedTaskCount++
         }
     })
 
-    // Wyświetlamy liczbę ukończonych zadań.
+    // Wyświetlamy licznik.
     document.getElementById("ZrobioneCount").textContent =
         completedTaskCount
 }
 
+// Panel szczegółów zadania.
 
-// ==========================================
-// PANEL SZCZEGÓŁÓW ZADANIA
-// ==========================================
-
-// Otwiera panel szczegółów dla wybranego zadania.
+// Otwiera szczegóły zadania.
 function openTaskDetails(taskElement) {
 
-    // Pobieramy aktualnie zaznaczone zadania.
+    // Pobieramy zaznaczone zadania.
     var selectedTasks =
         document.querySelectorAll(".task.selected")
 
-    // Usuwamy zaznaczenie z poprzednio wybranego zadania.
+    // Czyścimy poprzednie zaznaczenie.
     selectedTasks.forEach(function(selectedTask) {
         selectedTask.classList.remove("selected")
     })
 
-    // Dodajemy klasę selected do aktualnego zadania.
+    // Zaznaczamy zadanie.
     taskElement.classList.add("selected")
 
-    // Otwieramy panel szczegółów.
+    // Otwieramy panel.
     taskContent.classList.add("details-open")
 
     taskDetails.style.display = "block"
 
+    // Tworzenie zawartości panelu.
 
-    // ==========================================
-    // TWORZENIE ZAWARTOŚCI PANELU
-    // ==========================================
-
-    // Tworzymy zawartość panelu na podstawie danych
-    // należących do aktualnie wybranego zadania.
+    // Budujemy panel z danymi zadania.
     taskDetails.innerHTML =
         "<input value='" + taskElement.querySelector("span").textContent + "' id='title'>"
         + "<select id='taskCategoryDescription'>"
         +"<option value='projects'>Projekty</option>"
-        +"<option value='personal'>Osobiste</option>" 
+        +"<option value='personal'>Osobiste</option>"
         +"</select>"
         + "<textarea>" + taskElement.task.description + "</textarea>"
         + "<button class='saveDescriptionButton'>Zapisz</button>"
 
-
-    
-
-    // Pobieramy przycisk zapisu z aktualnie otwartego panelu.
+    // Pobieramy przycisk zapisu.
     var saveDescriptionButton =
         taskDetails.querySelector(".saveDescriptionButton")
 
-    // Pobieramy textarea z aktualnie otwartego panelu.
+    // Pobieramy textarea.
     var descriptionTextarea = taskDetails.querySelector("textarea")
 
-    // Pobieramy zmiany wyborów w opisie
+    // Pobieramy tytuł i kategorię.
     var changeTitle = document.getElementById("title")
     var changeCategory = document.getElementById("taskCategoryDescription")
 
-    // ==========================================
-    // ZAPISYWANIE OPISU
-    // ==========================================
+    // Zapisywanie opisu.
 
-    // Reagujemy na kliknięcie przycisku "Zapisz".
+    // Obsługa zapisu zmian.
     saveDescriptionButton.addEventListener("click", async function() {
 
         await updateTaskInAPI(taskElement.task,
@@ -407,16 +315,14 @@ function openTaskDetails(taskElement) {
                 description: descriptionTextarea.value,
                 title: changeTitle.value,
                 category: changeCategory.value,
-
             })
-        // Aktualizujemy opis w obiekcie task.
-        taskElement.task.description = descriptionTextarea.value
 
+        // Aktualizujemy dane zadania.
+        taskElement.task.description = descriptionTextarea.value
         taskElement.task.title = changeTitle.value
         taskElement.task.category = changeCategory.value
 
         taskElement.dataset.category = changeCategory.value
-
 
         taskElement.querySelector("span").textContent = changeTitle.value
 
@@ -425,164 +331,155 @@ function openTaskDetails(taskElement) {
         filterTasks(activeCategory.dataset.category)
     })
 
+    // Przycisk zamykania panelu.
 
-    // ==========================================
-    // PRZYCISK ZAMYKANIA PANELU
-    // ==========================================
-
-    // Tworzymy przycisk X.
+    // Tworzymy przycisk zamknięcia.
     var closeButton = document.createElement("button")
 
-    // Ustawiamy jego tekst.
+    // Ustawiamy tekst przycisku.
     closeButton.textContent = "X"
 
     // Dodajemy klasę CSS.
     closeButton.classList.add("closeTaskDetails")
 
-    // Ustawiamy typ button,
-    // żeby nie zachowywał się jak submit.
+    // Ustawiamy typ button.
     closeButton.type = "button"
 
-    // Dodajemy przycisk do panelu szczegółów.
+    // Dodajemy przycisk do panelu.
     taskDetails.appendChild(closeButton)
 
+    // Zamykanie panelu.
 
-    // ==========================================
-    // ZAMYKANIE PANELU
-    // ==========================================
-
-    // Reagujemy na kliknięcie przycisku X.
+    // Obsługa zamykania panelu.
     closeButton.addEventListener("click", function() {
 
-        // Ukrywamy panel szczegółów.
+        // Ukrywamy panel.
         taskDetails.style.display = "none"
 
-        // Usuwamy klasę otwartego panelu.
+        // Zamykamy panel.
         taskContent.classList.remove("details-open")
 
-        // Usuwamy zaznaczenie z zadania.
+        // Czyścimy zaznaczenie.
         taskElement.classList.remove("selected")
     })
 }
 
+// Konfigurowanie zachowania zadania.
 
-// ==========================================
-// ZAPISYWANIE DANYCH
-// ==========================================
-
-
-// ==========================================
-// KONFIGUROWANIE ZACHOWANIA ZADANIA
-// ==========================================
-
-// Dodaje listener odpowiedzialny za otwieranie
-// panelu szczegółów po kliknięciu zadania.
-//
-// Checkbox i przycisk Delete są pomijane,
-// ponieważ posiadają własne listenery.
+// Obsługa kliknięcia zadania.
 function setupTask(taskElement) {
 
     taskElement.addEventListener("click", function(event) {
 
-        // Jeżeli kliknięto checkbox,
-        // nie otwieramy panelu szczegółów.
+        // Pomijamy checkbox.
         if (event.target.classList.contains("taskCheckbox")) {
             return
         }
 
-        // Jeżeli kliknięto przycisk Delete,
-        // nie otwieramy panelu szczegółów.
+        // Pomijamy Delete.
         if (event.target.classList.contains("deleteTaskButton")) {
             return
         }
 
-        // W pozostałych przypadkach otwieramy szczegóły zadania.
+        // Otwieramy szczegóły zadania.
         openTaskDetails(taskElement)
 
     })
 
 }
 
-
+// Filtrowanie zadań.
 function filterTasks(category){
-    // Pobieramy wszystkie zadania znajdujące się w DOM.
-        var taskElements = document.querySelectorAll(".task")
 
-        // Sprawdzamy każde zadanie.
-        taskElements.forEach(function(taskElement) {
+    // Pobieramy zadania z DOM.
+    var taskElements = document.querySelectorAll(".task")
 
-            // Jeżeli wybrana jest kategoria "all",
-            // pokazujemy każde zadanie.
-            if (category === "all") {
-                taskElement.style.display = "flex"
-            }
+    // Sprawdzamy zadania.
+    taskElements.forEach(function(taskElement) {
 
-            // Jeżeli kategoria zadania odpowiada
-            // wybranej kategorii, pokazujemy zadanie.
-            else if (
-                taskElement.dataset.category === category
-            ) {
-                taskElement.style.display = "flex"
-            }
+        // Dla "all" pokazujemy wszystko.
+        if (category === "all") {
+            taskElement.style.display = "flex"
+        }
 
-            // Pozostałe zadania ukrywamy.
-            else {
-                taskElement.style.display = "none"
-            }
+        // Pokazujemy pasującą kategorię.
+        else if (
+            taskElement.dataset.category === category
+        ) {
+            taskElement.style.display = "flex"
+        }
 
-        })
+        // Ukrywamy pozostałe zadania.
+        else {
+            taskElement.style.display = "none"
+        }
+
+    })
 }
+
+// API.
+
+// GET - pobiera zadania.
 async function loadTasks() {
+
     const response = await fetch("http://127.0.0.1:5000/api/tasks");
+
     const data = await response.json();
 
     data.tasks.forEach(function(taskFromAPI) {
 
-    var task = {
-        id: taskFromAPI[0],
-        title: taskFromAPI[1],
-        description: taskFromAPI[2],
-        category: taskFromAPI[3],
-        completed: taskFromAPI[4] == 1 ? true : false
-    }
-    // Dodajemy odtworzone zadanie do głównej tablicy.
+        var task = {
+            id: taskFromAPI[0],
+            title: taskFromAPI[1],
+            description: taskFromAPI[2],
+            category: taskFromAPI[3],
+            completed: taskFromAPI[4] == 1 ? true : false
+        }
+
+        // Dodajemy zadanie do tablicy.
         tasks.push(task)
 
-        // Tworzymy element HTML reprezentujący zadanie.
+        // Tworzymy element zadania.
         var taskElement = createTask(task)
 
-        // Dodajemy do zadania listenery i jego zachowanie.
+        // Dodajemy listenery.
         setupTask(taskElement)
 
-        // Dodajemy utworzony element do DOM,
-        // dzięki czemu zadanie pojawia się na stronie.
+        // Dodajemy zadanie do DOM.
         document.getElementById("taskListContainer").appendChild(taskElement)
-})
+    })
 
     console.log(data);
 }
+
+// POST - dodaje zadanie.
 async function addTaskToAPI(task) {
-    const taskToSend = {
-    title: task.title,
-    description: task.description,
-    category: task.category,
-    completed: task.completed ? 1 : 0
-}
-const response = await fetch("http://127.0.0.1:5000/api/tasks", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json"
-    },
-    
-    body: JSON.stringify(taskToSend)
-})
-const data = await response.json();
 
-task.id = data.id
+    const taskToSend = {
+        title: task.title,
+        description: task.description,
+        category: task.category,
+        completed: task.completed ? 1 : 0
+    }
+
+    const response = await fetch("http://127.0.0.1:5000/api/tasks", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify(taskToSend)
+    })
+
+    const data = await response.json();
+
+    task.id = data.id
+
     console.log(data);
 }
-async function updateTaskInAPI(task,fields) {
-    
+
+// PATCH - aktualizuje pola.
+async function updateTaskInAPI(task, fields) {
 
     const response = await fetch(
         "http://127.0.0.1:5000/api/tasks/" + task.id,
@@ -594,14 +491,17 @@ async function updateTaskInAPI(task,fields) {
             body: JSON.stringify(fields)
         }
     )
-}   
-async function deleteTaskFromAPI(task) {
-const response = await fetch(
-    "http://127.0.0.1:5000/api/tasks/" + task.id,
-    {
-        method: "DELETE"
-    }
-)
-const data = await response.json()
+}
 
+// DELETE - usuwa zadanie.
+async function deleteTaskFromAPI(task) {
+
+    const response = await fetch(
+        "http://127.0.0.1:5000/api/tasks/" + task.id,
+        {
+            method: "DELETE"
+        }
+    )
+
+    const data = await response.json()
 }
