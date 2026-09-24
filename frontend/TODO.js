@@ -249,7 +249,7 @@ function createTask(task)
     // ==========================================
 
     // Reagujemy na kliknięcie przycisku usuwania.
-    deleteTaskButton.addEventListener("click", function() {
+    deleteTaskButton.addEventListener("click", async function() {
 
         // Szukamy indeksu konkretnego obiektu task
         // w tablicy przechowującej wszystkie zadania.
@@ -271,6 +271,7 @@ function createTask(task)
         // Usuwamy wizualny element zadania z DOM.
         deleteTaskButton.parentElement.remove()
 
+        deleteTaskFromAPI(task)
         // Zapisujemy zmienioną tablicę do localStorage.
         saveTasks()
 
@@ -614,4 +615,14 @@ async function updateTaskInAPI(task) {
             body: JSON.stringify(taskToSend)
         }
     )
+}
+async function deleteTaskFromAPI(task) {
+const response = await fetch(
+    "http://127.0.0.1:5000/api/tasks/" + task.id,
+    {
+        method: "DELETE"
+    }
+)
+const data = await response.json()
+
 }
