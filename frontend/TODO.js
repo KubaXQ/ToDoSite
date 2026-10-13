@@ -422,7 +422,7 @@ function filterTasks(category){
 // GET - pobiera zadania.
 async function loadTasks() {
 
-    const response = await fetch("http://127.0.0.1:5000/api/tasks");
+    const response = await fetch("/api/tasks");
 
     const data = await response.json();
 
@@ -462,7 +462,7 @@ async function addTaskToAPI(task) {
         completed: task.completed ? 1 : 0
     }
 
-    const response = await fetch("http://127.0.0.1:5000/api/tasks", {
+    const response = await fetch("/api/tasks", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -482,7 +482,7 @@ async function addTaskToAPI(task) {
 async function updateTaskInAPI(task, fields) {
 
     const response = await fetch(
-        "http://127.0.0.1:5000/api/tasks/" + task.id,
+        "/api/tasks/" + task.id,
         {
             method: "PATCH",
             headers: {
@@ -497,7 +497,7 @@ async function updateTaskInAPI(task, fields) {
 async function deleteTaskFromAPI(task) {
 
     const response = await fetch(
-        "http://127.0.0.1:5000/api/tasks/" + task.id,
+        "/api/tasks/" + task.id,
         {
             method: "DELETE"
         }
