@@ -31,7 +31,7 @@ def add_task():
                 "message": f"Pole jest puste: {field}",
                 "success": False
             }), 400
-        elif field == "completed" and (not isinstance(data[field], int) or data[field] not in [0, 1]):
+        elif field == "completed" and (type(data[field]) is not int or data[field] not in [0, 1]):
             return jsonify({
                 "message": f"Pole {field} ma nieprawidlowe dane",
                 "success": False
